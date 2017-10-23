@@ -6,12 +6,14 @@
 import random
 import numpy as np
 import sys
+import matplotlib.pyplot as plt
 
-# ==============Perceptron Algorithm==================================
+# ==============Pocket Algorithm==================================
 #Linear classification
 #Extracts coordinates, labels from classification.txt
 #Randomly chooses weights for each coordinate
-#Finds final weights using perceptron algorithm
+#Finds the least number of broken constraints since this breaks the 
+#"promise problem"
 def main():
 	# load txt file
 	f = open("classification.txt", 'r')
@@ -23,7 +25,7 @@ def main():
 	X = np.array(result_matrix)
 
 	coordinates = np.array(X[:,0:3])
-	labels = np.array(X[:,3])
+	labels = np.array(X[:,4])
 
 	#pad coordinates to make N x d+1 dimensionality (2,000 x 4)
 	padded_coordinates = np.insert(coordinates, 0, 1, axis=1)
@@ -31,14 +33,18 @@ def main():
 	#randomly choose weights for each coordinate having dx1 (4,)dimentionality
 	weights = np.random.uniform(low=0.0, high=0.4, size=(len(padded_coordinates[0])))
 
-	wcalc =   perceptronLearning(padded_coordinates, weights, labels)
-	print 'Weight vector for Perceptron Learning Algorithm: \n', wcalc
+	brokenConstraints = pocketAlgorithm(padded_coordinates, weights, labels)
+	print 'Plotting...'
+	plot_missclass(brokenConstraints, 7000)
+	
 
 # Implements the percetron learning algorithm from class
 # As long as there is a constraint, either add or subtract alpha*x(i)
 # Converge or stop the algorithm where the number of constriants == 0
 # Return the weight vector
-def perceptronLearning(x, weight, y):
+def pocketAlgorithm(x, weight, y):
+	#Max number of iterations given by assignment
+	iterations = 7000
 	#Alpha should be "small" enough
 	alpha = 0.01
 	#The constraints broken count
@@ -46,8 +52,9 @@ def perceptronLearning(x, weight, y):
 	#The weight vector, currently all randomized 
 	w = weight
 
+	brokenConstraints = []
 	#While there exist a constraint run the PLA
-	while constraint != 0:
+	while iterations > 0:
 		constraint = 0
 		#Randomly choose indexes from our data x
 		for i in np.random.permutation(range(len(x))):
@@ -56,12 +63,23 @@ def perceptronLearning(x, weight, y):
 			if(y_calc < 0 and y[i] == 1):
 				constraint += 1
 				w = np.add(w, alpha*x[i])
-				break #Optimization, if there is already a broken constraint
+				
 			elif(y_calc > 0 and y[i] == -1):
 				constraint += 1
 				w = np.subtract(w, alpha*x[i])
-				break #Optimization, if there is already a broken constraint
-	return w
+		brokenConstraints.append(constraint)
+		iterations -= 1
+	return brokenConstraints
 
+#Plots Misclassified points vs 7000 Iterations
+def plot_missclass(missMat, maxIter):
+	#plt.figure(figsize=(15,2))
+	plt.plot(missMat)
+	# plt.xticks(np.arange(0, maxIter, 100))
+	plt.xlim(0,maxIter)
+	plt.xlabel('Iterations')
+	plt.ylabel('Misclassifications')
+	plt.title('Misclassified points vs Iterations of Pocket Algorithm')
+	plt.show()
 if __name__ == "__main__":
     main()
