@@ -28,9 +28,9 @@ def main():
 
 	#randomly choose weights having dx1 (4,)dimentionality
 	weights = np.random.uniform(low=-0.01, high=0.02, size=(len(padded_coordinates[0])))
-	print "weights", weights
+	print "Random weights", weights
 
-	print 'Best fit for data in classification.txt using Logistic Regression is: \n', logisticRegression(padded_coordinates, labels, weights)
+	print 'Best fit (weights) for data in classification.txt using Logistic Regression is: \n', logisticRegression(padded_coordinates, labels, weights)
 
 #Runs 7000 times and updates weights by subtracting the product of
 #error gradient and eta(learning rate) from weights.
