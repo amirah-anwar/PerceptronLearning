@@ -27,7 +27,7 @@ def main():
 	padded_coordinates = np.insert(coordinates, 0, 1, axis=1)
 
 	#randomly choose weights having dx1 (4,)dimentionality
-	weights = np.random.uniform(low=-0.01, high=0.02, size=(len(padded_coordinates[0])))
+	weights = np.random.uniform(low=-0.01, high=0.01, size=(len(padded_coordinates[0])))
 	print "Random weights", weights
 
 	print 'Best fit (weights) for data in classification.txt using Logistic Regression is: \n', logisticRegression(padded_coordinates, labels, weights)
