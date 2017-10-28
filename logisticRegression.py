@@ -50,10 +50,9 @@ def logisticRegression(x, y, w):
 #Calculates the gradient using the formula derived in class
 #Formala: -1/N * summation from 1 to N (1/1+e^(y * w * x)  * y * x)
 def gradient_calc(N,y,w,x):
-	ein = 0
-	for i in range(N):
-		ein += (1/(1+np.exp(y[i]*(np.dot(w.T,x[i]))))) * (y[i]*x[i])
-	return ((-1/N)*ein)
+	ein = 0.0
+	ein = np.dot((1/(1+np.exp(y*(np.dot(w,x.T))))) * y, x)
+	return ((-1/float(N))*ein)
 
 
 if __name__ == "__main__":
